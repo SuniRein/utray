@@ -1,4 +1,4 @@
-use clap::{Args, Parser, Subcommand};
+use clap::{Args, Parser, Subcommand, ValueEnum};
 
 #[derive(Parser)]
 #[command(author, version, about, long_about = None)]
@@ -20,6 +20,16 @@ pub enum Commands {
 pub struct GetArgs {
     /// ID of the tray item to retrieve
     pub id: String,
+
+    /// Display the icon using the specified method
+    #[arg(long, value_enum, value_name = "METHOD")]
+    pub icon: Option<IconDisplayMode>,
+}
+
+#[derive(ValueEnum, Clone)]
+pub enum IconDisplayMode {
+    Rgba,
+    Kitty,
 }
 
 #[cfg(test)]
