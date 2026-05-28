@@ -72,6 +72,12 @@ impl TrayService for SniService {
 
         Ok(tray_items)
     }
+
+    async fn get_item_by_id(&self, id: &str) -> Result<Option<TrayItem>, Self::Error> {
+        self.get_all_items()
+            .await
+            .map(|items| items.into_iter().find(|item| item.id == id))
+    }
 }
 
 impl SniService {

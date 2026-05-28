@@ -1,14 +1,15 @@
 mod cli;
 
-use crate::cli::{Cli, Commands};
+use crate::cli::{Cli, Commands, GetArgs};
 use clap::Parser;
-use utray::{SniService, TrayService};
+use utray::{SniService, TrayItem, TrayService};
 
 #[tokio::main]
 async fn main() {
     let cli = Cli::parse();
     match cli.command {
         Commands::List => list_tray_items().await,
+        Commands::Get(args) => get_tray_item(args).await,
     }
 }
 
@@ -22,7 +23,7 @@ async fn list_tray_items() {
     }
 }
 
-fn pretty_print_tray_item(item: &utray::TrayItem) {
+fn pretty_print_tray_item(item: &TrayItem) {
     println!("╔════════════════════════════════════════════════════════════════════╗");
     println!("  {}", item.title);
     println!("╚════════════════════════════════════════════════════════════════════╝");
@@ -48,4 +49,14 @@ fn pretty_print_tray_item(item: &utray::TrayItem) {
     }
 
     println!();
+}
+
+async fn get_tray_item(args: GetArgs) {
+    let tray_service = SniService::new().await.unwrap();
+
+    match tray_service.get_item_by_id(&args.id).await {
+        Ok(Some(item)) => pretty_print_tray_item(&item),
+        Ok(None) => eprintln!("No tray item found"),
+        Err(e) => eprintln!("Error retrieving tray item: {e}"),
+    }
 }

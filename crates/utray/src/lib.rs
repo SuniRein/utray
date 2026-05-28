@@ -36,4 +36,5 @@ pub trait TrayService: Send + Sync {
     type Error;
 
     async fn get_all_items(&self) -> Result<Vec<TrayItem>, Self::Error>;
+    async fn get_item_by_id(&self, id: &str) -> Result<Option<TrayItem>, Self::Error>;
 }
