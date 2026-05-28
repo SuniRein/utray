@@ -1,5 +1,6 @@
 [package]
 name = "utray-cli"
+description = "A command-line tool to interact with system tray."
 version.workspace = true
 edition.workspace = true
 authors.workspace = true
@@ -7,5 +8,6 @@ license.workspace = true
 repository.workspace = true
 
 [dependencies]
+clap = { version = "4", features = ["derive"] }
 utray = { path = "../utray" }
 tokio = { workspace = true }

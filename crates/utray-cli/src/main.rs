@@ -1,7 +1,18 @@
+mod cli;
+
+use crate::cli::{Cli, Commands};
+use clap::Parser;
 use utray::{SniService, TrayService};
 
 #[tokio::main]
 async fn main() {
+    let cli = Cli::parse();
+    match cli.command {
+        Commands::List => list_tray_items().await,
+    }
+}
+
+async fn list_tray_items() {
     let tray_service = SniService::new().await.unwrap();
 
     let tray_items = tray_service.get_all_items().await.unwrap();
