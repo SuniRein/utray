@@ -65,8 +65,11 @@ impl TrayService for SniService {
             let service = &entry[..pos];
             let path = &entry[pos..];
 
-            if let Ok(item) = self.fetch_item(service, path).await {
-                tray_items.push(item);
+            match self.fetch_item(service, path).await {
+                Ok(item) => tray_items.push(item),
+                Err(e) => {
+                    eprintln!("Failed to fetch item for service '{service}' at path '{path}': {e}")
+                }
             }
         }
 
@@ -99,16 +102,23 @@ impl SniService {
         };
 
         let icon_name = proxy.icon_name().await?;
-        let icon_pixmaps = proxy
-            .icon_pixmap()
-            .await?
-            .into_iter()
-            .map(|(w, h, data)| IconPixmap {
-                width: w as u32,
-                height: h as u32,
-                data,
-            })
-            .collect();
+
+        // Some items may not provide pixmaps, so we handle errors gracefully and return an empty
+        // vector if retrieval fails.
+        let icon_pixmaps = match proxy.icon_pixmap().await {
+            Ok(pixmaps) => pixmaps
+                .into_iter()
+                .map(|(w, h, data)| IconPixmap {
+                    width: w as u32,
+                    height: h as u32,
+                    data,
+                })
+                .collect(),
+            Err(e) => {
+                eprintln!("Failed to get icon pixmaps for item '{id}': {e}");
+                Vec::new()
+            }
+        };
 
         let menu_path = proxy.menu().await?;
 
