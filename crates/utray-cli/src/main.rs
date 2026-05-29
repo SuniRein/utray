@@ -46,10 +46,9 @@ fn pretty_print_tray_item(item: &TrayItem) {
     println!("  ├─ Menu Path:   {}", item.menu_path);
     println!("  ├─ Status:      {:?}", item.status);
 
-    if !item.icon_name.is_empty() {
-        println!("  ├─ Icon Name:   {}", item.icon_name);
-    } else {
-        println!("  ├─ Icon Name:   (None)");
+    match &item.icon_name {
+        Some(name) => println!("  ├─ Icon Name:   {name}",),
+        None => println!("  ├─ Icon Name:   (None)"),
     }
 
     if item.icon_pixmaps.is_empty() {

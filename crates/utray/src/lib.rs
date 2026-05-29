@@ -11,7 +11,7 @@ pub struct TrayItem {
     pub service_name: String,
     pub object_path: String,
     pub title: String,
-    pub icon_name: String,
+    pub icon_name: Option<String>,
     pub icon_pixmaps: Vec<IconPixmap>,
     pub status: TrayItemStatus,
     pub menu_path: String,

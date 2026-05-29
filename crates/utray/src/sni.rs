@@ -1,6 +1,9 @@
 use crate::{IconPixmap, TrayItem, TrayItemStatus, TrayService};
 use async_trait::async_trait;
-use zbus::{Connection, proxy, zvariant::OwnedObjectPath};
+use zbus::{
+    Connection, proxy,
+    zvariant::{Optional, OwnedObjectPath},
+};
 
 #[proxy(
     interface = "org.kde.StatusNotifierWatcher",
@@ -27,7 +30,7 @@ trait StatusNotifierItem {
     fn status(&self) -> zbus::Result<String>;
 
     #[zbus(property)]
-    fn icon_name(&self) -> zbus::Result<String>;
+    fn icon_name(&self) -> zbus::Result<Optional<String>>;
 
     #[zbus(property)]
     fn icon_pixmap(&self) -> zbus::Result<Vec<(i32, i32, Vec<u8>)>>;
@@ -127,7 +130,7 @@ impl SniService {
             service_name: service.to_string(),
             object_path: path.to_string(),
             title,
-            icon_name,
+            icon_name: icon_name.into(),
             icon_pixmaps,
             status,
             menu_path: menu_path.to_string(),
