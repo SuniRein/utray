@@ -1,6 +1,6 @@
 mod cli;
 
-use crate::cli::{Cli, Commands, GetArgs, IconDisplayMode};
+use crate::cli::{Cli, Commands, GetArgs, IconDisplayMode, ListArgs};
 use clap::Parser;
 use utray::{SniService, TrayItem, TrayService};
 
@@ -15,15 +15,21 @@ macro_rules! exit {
 async fn main() {
     let cli = Cli::parse();
     match cli.command {
-        Commands::List => list_tray_items().await,
+        Commands::List(args) => list_tray_items(args).await,
         Commands::Get(args) => get_tray_item(args).await,
     }
 }
 
-async fn list_tray_items() {
+async fn list_tray_items(args: ListArgs) {
     let tray_service = SniService::new().await.unwrap();
 
     let tray_items = tray_service.get_all_items().await.unwrap();
+
+    if args.json {
+        let json = serde_json::to_string_pretty(&tray_items).unwrap();
+        println!("{json}");
+        return;
+    }
 
     for item in tray_items {
         pretty_print_tray_item(&item);
@@ -94,6 +100,12 @@ async fn get_tray_item(args: GetArgs) {
             }
         }
 
+        return;
+    }
+
+    if args.json {
+        let json = serde_json::to_string_pretty(&item).unwrap();
+        println!("{json}");
         return;
     }
 

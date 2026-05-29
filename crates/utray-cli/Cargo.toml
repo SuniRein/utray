@@ -9,5 +9,7 @@ repository.workspace = true
 
 [dependencies]
 clap = { version = "4", features = ["derive"] }
-utray = { path = "../utray" }
+serde = { workspace = true }
+serde_json = { workspace = true }
 tokio = { workspace = true }
+utray = { path = "../utray" }

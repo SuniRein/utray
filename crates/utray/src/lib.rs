@@ -3,8 +3,9 @@ mod sni;
 pub use sni::SniService;
 
 use async_trait::async_trait;
+use serde::Serialize;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize)]
 pub struct TrayItem {
     pub id: String,
     pub service_name: String,
@@ -16,17 +17,18 @@ pub struct TrayItem {
     pub menu_path: String,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
 pub enum TrayItemStatus {
     Active,
     Passive,
     NeedsAttention,
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize)]
 pub struct IconPixmap {
     pub width: u32,
     pub height: u32,
+    #[serde(skip_serializing)]
     pub data: Vec<u8>,
 }
 

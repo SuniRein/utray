@@ -10,10 +10,17 @@ pub struct Cli {
 #[derive(Subcommand)]
 pub enum Commands {
     /// List all tray items
-    List,
+    List(ListArgs),
 
     /// Get details of a specific tray item by ID
     Get(GetArgs),
+}
+
+#[derive(Args)]
+pub struct ListArgs {
+    /// Output the list in JSON format
+    #[arg(short, long)]
+    pub json: bool,
 }
 
 #[derive(Args)]
@@ -24,6 +31,10 @@ pub struct GetArgs {
     /// Display the icon using the specified method
     #[arg(long, value_enum, value_name = "METHOD")]
     pub icon: Option<IconDisplayMode>,
+
+    /// Output the details in JSON format
+    #[arg(short, long)]
+    pub json: bool,
 }
 
 #[derive(ValueEnum, Clone)]
